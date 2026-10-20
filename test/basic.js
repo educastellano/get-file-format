@@ -62,3 +62,37 @@ test('undetected format returns null', (t) => {
 
   t.is(result, null)
 })
+
+test('ftyp box with a wrong size resolves quickly', (t) => {
+  const buffer = Buffer.alloc(16)
+  buffer.writeUInt32BE(0xffffffff, 0)
+  buffer.write('ftyp', 4, 'latin1')
+  buffer.write('xxxx', 8, 'latin1')
+  buffer.write('xxxx', 12, 'latin1')
+
+  const start = Date.now()
+  const result = getFileFormat(buffer)
+  const elapsed = Date.now() - start
+
+  t.is(result, null, 'unrecognized brand with wrong size')
+  t.ok(elapsed < 1000, `resolves quickly (${elapsed}ms)`)
+})
+
+test('svg without xml declaration', (t) => {
+  const buffer = require('./fixtures/plain.svg', {
+    with: { type: 'binary' }
+  })
+  const result = getFileFormat(buffer)
+  t.is(result, 'svg', 'svg without xml declaration')
+})
+
+test('svg larger than head buffer', (t) => {
+  const header = Buffer.from(
+    '<?xml version="1.0"?>\n<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">\n<rect width="100" height="100"/>\n'
+  )
+  const padding = Buffer.alloc(8192, 0x20)
+  const closing = Buffer.from('</svg>')
+  const buffer = Buffer.concat([header, padding, closing])
+  const result = getFileFormat(buffer)
+  t.is(result, 'svg', 'svg with closing tag past 4KB head window')
+})
