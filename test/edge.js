@@ -25,12 +25,9 @@ test('svg without xml declaration', (t) => {
 })
 
 test('svg tag past the head buffer', (t) => {
-  const header = Buffer.from('<?xml version="1.0"?>\n')
-  const padding = Buffer.alloc(8192, 0x20)
-  const tag = Buffer.from('<svg></svg>')
-  const buffer = Buffer.concat([header, padding, tag])
-  const result = getFileFormat(buffer)
-  t.is(result, 'xml', 'svg tag past 4KB head window needs inspection')
+  const buffer = Buffer.from('<?xml version="1.0"?>' + ' '.repeat(8192) + '<svg></svg>')
+
+  t.is(getFileFormat(buffer), 'svg')
 })
 
 test('supports binary types', (t) => {

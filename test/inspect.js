@@ -202,7 +202,7 @@ test('fromPath: optionally inspects XML - stops at the byte limit', async (t) =>
       inspect: true
     })
 
-    t.is(format, 'xml', 'from buffer')
+    t.is(format, 'svg', 'scans the supplied buffer')
     t.is(result.format, 'xml', 'from path')
     t.is(inspected.format, 'xml', 'inspection limit')
   } finally {

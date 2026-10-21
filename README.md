@@ -42,7 +42,7 @@ const result = await getFileFormat.fromPath('./sample.mp4', {
 
 > Without `inspect`, detection only looks at the first 4 KB of the file. Signatures beyond that window return a less specific format.
 >
-> Currently supported: MP4 → M4A, MKV → MKA, XML → SVG.
+> Currently supported: MP4 → M4A, MKV → MKA
 
 It can be used in combination with [get-mime-type](https://github.com/holepunchto/get-mime-type):
 

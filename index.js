@@ -51,7 +51,7 @@ function getFileFormat(bytes) {
   }
 
   if (format === 'xml') {
-    return xml.detect(buffer)
+    return xml.detect(toBuffer(bytes))
   }
 
   return format || null
